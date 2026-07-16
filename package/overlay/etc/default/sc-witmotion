@@ -1,0 +1,16 @@
+# Preferred stable serial device path observed on the target.
+# Use the by-path alias so the binding follows the physical USB port.
+SC_WITMOTION_DEVICE=/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0
+
+# WitMotion serial settings.
+SC_WITMOTION_BAUD=115200
+
+# Browser/API server settings.
+SC_WITMOTION_HTTP_HOST=0.0.0.0
+SC_WITMOTION_HTTP_PORT=9010
+
+# Health and reconnect behavior.
+SC_WITMOTION_STALE_MS=750
+SC_WITMOTION_RECONNECT_MS=2000
+SC_WITMOTION_STATE_FILE=/var/lib/sc-witmotion/runtime.json
+SC_WITMOTION_LOG_LEVEL=INFO

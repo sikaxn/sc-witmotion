@@ -1,0 +1,24 @@
+#!/bin/sh
+PACKAGE_NAME="sc-witmotion"
+
+echo "Configuring service for $PACKAGE_NAME"
+
+systemctl daemon-reload
+sleep 1
+
+echo "Enabling service..."
+systemctl enable $PACKAGE_NAME.service
+
+echo "Starting service..."
+if systemctl start $PACKAGE_NAME.service; then
+    sleep 2
+    if systemctl is-active $PACKAGE_NAME.service >/dev/null 2>&1; then
+        echo "Service is running"
+    else
+        echo "Service failed to reach active state"
+    fi
+else
+    echo "Failed to start service automatically"
+fi
+
+exit 0

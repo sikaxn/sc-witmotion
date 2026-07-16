@@ -1,0 +1,13 @@
+#!/bin/sh
+PACKAGE_NAME="sc-witmotion"
+
+echo "Stopping $PACKAGE_NAME service..."
+
+if systemctl is-active $PACKAGE_NAME.service >/dev/null 2>&1; then
+    systemctl stop $PACKAGE_NAME.service || true
+fi
+
+echo "Disabling service auto-start..."
+systemctl disable $PACKAGE_NAME.service 2>/dev/null || true
+
+exit 0

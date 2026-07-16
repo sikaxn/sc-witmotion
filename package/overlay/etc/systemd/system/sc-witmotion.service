@@ -1,0 +1,25 @@
+[Unit]
+Description=WitMotion IMU bridge and browser UI
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=systemcore
+Group=systemcore
+StateDirectory=sc-witmotion
+EnvironmentFile=-/etc/default/sc-witmotion
+WorkingDirectory=/usr/local/bin/sc-witmotion
+ExecStart=/usr/bin/env python3 /usr/local/bin/sc-witmotion/sc_witmotion.py
+Restart=always
+RestartSec=2
+TimeoutStartSec=5
+TimeoutStopSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

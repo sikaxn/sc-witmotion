@@ -1,0 +1,13 @@
+Package: sc-witmotion
+Version: 0.1.0
+Description: WitMotion IMU bridge with browser UI and WPILib Java client endpoint
+Section: robotics
+Priority: optional
+Maintainer: Nathan
+Architecture: all
+Source: local
+X-Port: 9010
+X-Has-UI: true
+X-Auto-Start: true
+X-Services: sc-witmotion.service
+X-Icon-Path: /usr/share/sc-witmotion.svg

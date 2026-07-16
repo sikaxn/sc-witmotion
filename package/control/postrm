@@ -1,0 +1,9 @@
+#!/bin/sh
+PACKAGE_NAME="sc-witmotion"
+
+systemctl daemon-reload
+systemctl reset-failed $PACKAGE_NAME.service 2>/dev/null || true
+
+echo "Service cleanup complete."
+
+exit 0

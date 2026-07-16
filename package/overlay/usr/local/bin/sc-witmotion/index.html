@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>sc-witmotion</title>
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --panel: #fffdf8;
+      --ink: #1d2935;
+      --muted: #6c7b87;
+      --accent: #cc4b37;
+      --accent-soft: #f4d1c9;
+      --ok: #1f8d49;
+      --bad: #b42318;
+      --line: #d9d1c2;
+      --field: #f7f2e8;
+      --field-border: #c9bea9;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, #fff7e8 0%, transparent 34%),
+        linear-gradient(135deg, #efe7d7, var(--bg));
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 48px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 0.95;
+    }
+
+    .summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--bad);
+      box-shadow: 0 0 0 5px rgba(180, 35, 24, 0.1);
+    }
+
+    .dot.ok {
+      background: var(--ok);
+      box-shadow: 0 0 0 5px rgba(31, 141, 73, 0.1);
+    }
+
+    .banner {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid #e8b1a5;
+      background: var(--accent-soft);
+      color: #7a271a;
+      display: none;
+    }
+
+    .banner.info {
+      border-color: #cbd8eb;
+      background: #edf4ff;
+      color: #25476d;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(29, 41, 53, 0.05);
+    }
+
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .value {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 14px;
+      word-break: break-word;
+    }
+
+    .stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .kv {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 0;
+      border-top: 1px solid #efe7da;
+      font-size: 14px;
+    }
+
+    .kv:first-child {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      font-size: 14px;
+    }
+
+    .field span {
+      font-weight: 600;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--field-border);
+      background: var(--field);
+      padding: 10px 12px;
+      color: var(--ink);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      padding: 2px 0;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid #ebe1d0;
+      background: #faf6ef;
+    }
+
+    .check input {
+      margin: 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 10px 14px;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #315b79;
+    }
+
+    button.ghost {
+      background: #e8dfcf;
+      color: var(--ink);
+    }
+
+    .mono {
+      font-family: Consolas, "Courier New", monospace;
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 20px 14px 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">SystemCore WitMotion Bridge</div>
+      <h1>sc-witmotion</h1>
+      <div class="summary">
+        <div class="pill"><span id="statusDot" class="dot"></span><span id="statusText">Waiting for IMU data</span></div>
+        <div class="pill">HTTP <span class="mono">:9010</span></div>
+        <div class="pill">API <span class="mono">/api/v1/status</span></div>
+      </div>
+      <div id="warning" class="banner"></div>
+      <div id="notice" class="banner info"></div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="label">Roll</div>
+        <div id="roll" class="value">NaN</div>
+        <div class="sub">degrees</div>
+      </article>
+
+      <article class="card">
+        <div class="label">Pitch</div>
+        <div id="pitch" class="value">NaN</div>
+        <div class="sub">degrees</div>
+      </article>
+
+      <article class="card">
+        <div class="label">Yaw</div>
+        <div id="yaw" class="value">NaN</div>
+        <div class="sub">degrees</div>
+      </article>
+
+      <article class="card">
+        <div class="label">Stream</div>
+        <div id="rate" class="value">0.0</div>
+        <div class="sub">frames per second</div>
+      </article>
+
+      <article class="card stack">
+        <div class="label">Serial</div>
+        <div class="kv"><span>Configured Port</span><span id="configuredDevice" class="mono">-</span></div>
+        <div class="kv"><span>Active Device</span><span id="device" class="mono">-</span></div>
+        <div class="kv"><span>Resolved TTY</span><span id="resolvedDevice" class="mono">-</span></div>
+        <div class="kv"><span>Host Baud</span><span id="baud" class="mono">-</span></div>
+        <div class="kv"><span>Last Frame Age</span><span id="age" class="mono">-</span></div>
+      </article>
+
+      <article class="card stack">
+        <div class="label">Acceleration</div>
+        <div class="kv"><span>X</span><span id="accelX" class="mono">NaN g</span></div>
+        <div class="kv"><span>Y</span><span id="accelY" class="mono">NaN g</span></div>
+        <div class="kv"><span>Z</span><span id="accelZ" class="mono">NaN g</span></div>
+      </article>
+
+      <article class="card stack">
+        <div class="label">Gyro</div>
+        <div class="kv"><span>X</span><span id="gyroX" class="mono">NaN dps</span></div>
+        <div class="kv"><span>Y</span><span id="gyroY" class="mono">NaN dps</span></div>
+        <div class="kv"><span>Z</span><span id="gyroZ" class="mono">NaN dps</span></div>
+      </article>
+
+      <article class="card stack">
+        <div class="label">Diagnostics</div>
+        <div class="kv"><span>Frames</span><span id="frames" class="mono">0</span></div>
+        <div class="kv"><span>Bytes</span><span id="bytes" class="mono">0</span></div>
+        <div class="kv"><span>Checksums</span><span id="checksums" class="mono">0</span></div>
+        <div class="kv"><span>Stale Threshold</span><span id="staleThreshold" class="mono">-</span></div>
+      </article>
+    </section>
+
+    <section class="settings-grid">
+      <article class="card stack">
+        <div class="label">USB Binding</div>
+        <form id="usbForm" class="stack">
+          <label class="field">
+            <span>WitMotion Device</span>
+            <select id="selectedDevice"></select>
+            <div class="hint">When you bind a device here, the service expects this same USB port path on future reconnects.</div>
+          </label>
+          <label class="field">
+            <span>Host Serial Baud</span>
+            <select id="hostBaud"></select>
+            <div class="hint">This is the baud rate the SystemCore service uses to open the serial port.</div>
+          </label>
+          <div class="actions">
+            <button type="submit">Save USB Settings</button>
+            <button type="button" class="secondary" data-action="rescan">Rescan Devices</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card stack">
+        <div class="label">Sensor Settings</div>
+        <form id="sensorForm" class="stack">
+          <div class="row">
+            <label class="field">
+              <span>Sensor Baud</span>
+              <select id="sensorBaud"></select>
+            </label>
+            <label class="field">
+              <span>Output Rate</span>
+              <select id="outputRate"></select>
+            </label>
+          </div>
+          <div class="row">
+            <label class="field">
+              <span>Bandwidth</span>
+              <select id="bandwidth"></select>
+            </label>
+            <label class="field">
+              <span>Orientation</span>
+              <select id="orientation"></select>
+            </label>
+          </div>
+          <label class="field">
+            <span>6-Axis / 9-Axis</span>
+            <select id="axisMode"></select>
+          </label>
+          <div class="field">
+            <span>Output Content</span>
+            <div id="outputFlags" class="check-grid"></div>
+            <div class="hint">These fields control what telemetry packets the sensor emits.</div>
+          </div>
+          <div class="actions">
+            <button type="submit">Apply Sensor Settings</button>
+          </div>
+          <div class="hint">Applying sensor baud also updates the host serial baud and reconnects the service.</div>
+        </form>
+      </article>
+
+      <article class="card stack">
+        <div class="label">Sensor Actions</div>
+        <div class="actions">
+          <button type="button" class="ghost" data-action="save_parameters">Save Parameters</button>
+          <button type="button" class="ghost" data-action="set_reference_angle">Set Reference Angle</button>
+          <button type="button" class="ghost" data-action="start_accel_calibration">Start Accel Calibration</button>
+          <button type="button" class="ghost" data-action="stop_accel_calibration">Stop Accel Calibration</button>
+          <button type="button" class="ghost" data-action="start_mag_calibration">Start Mag Calibration</button>
+          <button type="button" class="ghost" data-action="stop_mag_calibration">Stop Mag Calibration</button>
+        </div>
+        <div class="hint">Calibration commands are sent directly to the sensor over the active serial connection.</div>
+      </article>
+    </section>
+  </div>
+
+  <script>
+    const uiState = {
+      controlsBuilt: false,
+      usbDirty: false,
+      sensorDirty: false,
+    };
+
+    function fmtNumber(value, digits = 3) {
+      if (typeof value !== "number" || Number.isNaN(value)) {
+        return "NaN";
+      }
+      return value.toFixed(digits);
+    }
+
+    function setText(id, value) {
+      document.getElementById(id).textContent = value;
+    }
+
+    function showBanner(id, text) {
+      const node = document.getElementById(id);
+      if (text) {
+        node.style.display = "block";
+        node.textContent = text;
+      } else {
+        node.style.display = "none";
+        node.textContent = "";
+      }
+    }
+
+    function clearSelect(select) {
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+    }
+
+    function appendOption(select, value, label) {
+      const option = document.createElement("option");
+      option.value = String(value);
+      option.textContent = label;
+      select.appendChild(option);
+    }
+
+    function buildControls(meta) {
+      if (uiState.controlsBuilt) {
+        return;
+      }
+
+      const hostBaud = document.getElementById("hostBaud");
+      const sensorBaud = document.getElementById("sensorBaud");
+      const outputRate = document.getElementById("outputRate");
+      const bandwidth = document.getElementById("bandwidth");
+      const orientation = document.getElementById("orientation");
+      const axisMode = document.getElementById("axisMode");
+      const outputFlags = document.getElementById("outputFlags");
+
+      clearSelect(hostBaud);
+      clearSelect(sensorBaud);
+      clearSelect(outputRate);
+      clearSelect(bandwidth);
+      clearSelect(orientation);
+      clearSelect(axisMode);
+
+      appendOption(sensorBaud, "", "Keep current");
+      appendOption(outputRate, "", "Keep current");
+      appendOption(bandwidth, "", "Keep current");
+      appendOption(orientation, "", "Keep current");
+      appendOption(axisMode, "", "Keep current");
+
+      for (const option of meta.baud_options || []) {
+        appendOption(hostBaud, option.value, option.label);
+        appendOption(sensorBaud, option.value, option.label);
+      }
+      for (const option of meta.rate_options || []) {
+        appendOption(outputRate, option.value, option.label);
+      }
+      for (const option of meta.bandwidth_options || []) {
+        appendOption(bandwidth, option.value, option.label);
+      }
+      for (const option of meta.orientation_options || []) {
+        appendOption(orientation, option.value, option.label);
+      }
+      for (const option of meta.axis_mode_options || []) {
+        appendOption(axisMode, option.value, option.label);
+      }
+
+      for (const option of meta.output_options || []) {
+        const label = document.createElement("label");
+        label.className = "check";
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.dataset.outputKey = option.key;
+        const text = document.createElement("span");
+        text.textContent = option.label;
+        label.appendChild(input);
+        label.appendChild(text);
+        outputFlags.appendChild(label);
+      }
+
+      document.getElementById("usbForm").addEventListener("change", () => {
+        uiState.usbDirty = true;
+      });
+      document.getElementById("sensorForm").addEventListener("change", () => {
+        uiState.sensorDirty = true;
+      });
+
+      uiState.controlsBuilt = true;
+    }
+
+    function updateDeviceOptions(devices, selectedPath) {
+      const select = document.getElementById("selectedDevice");
+      const currentValue = select.value;
+      clearSelect(select);
+      appendOption(select, "", "Auto-detect first available device");
+      for (const device of devices || []) {
+        const label = device.available ? device.label : `${device.label} [offline]`;
+        appendOption(select, device.path, label);
+      }
+      const nextValue = selectedPath || currentValue || "";
+      select.value = nextValue;
+    }
+
+    function populateForms(data) {
+      const settings = data.settings || {};
+      const effective = data.effective_settings || {};
+      const sensor = effective.sensor || {};
+
+      updateDeviceOptions(data.available_devices || [], settings.selected_device_path || "");
+
+      if (!uiState.usbDirty) {
+        document.getElementById("hostBaud").value = String(effective.host_baud || data.baud || "");
+      }
+
+      if (!uiState.sensorDirty) {
+        document.getElementById("sensorBaud").value = sensor.sensor_baud ? String(sensor.sensor_baud) : "";
+        document.getElementById("outputRate").value = sensor.output_rate_hz ? String(sensor.output_rate_hz) : "";
+        document.getElementById("bandwidth").value = sensor.bandwidth_hz ? String(sensor.bandwidth_hz) : "";
+        document.getElementById("orientation").value = sensor.orientation !== null && sensor.orientation !== undefined ? String(sensor.orientation) : "";
+        document.getElementById("axisMode").value = sensor.axis_mode !== null && sensor.axis_mode !== undefined ? String(sensor.axis_mode) : "";
+        for (const checkbox of document.querySelectorAll("[data-output-key]")) {
+          const key = checkbox.dataset.outputKey;
+          checkbox.checked = Boolean(sensor.output_content && sensor.output_content[key]);
+        }
+      }
+    }
+
+    async function postJson(url, payload) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok || data.ok === false) {
+        throw new Error(data.error || data.message || `HTTP ${response.status}`);
+      }
+      return data;
+    }
+
+    async function runAction(action) {
+      try {
+        const result = await postJson("/api/v1/actions", { action });
+        showBanner("notice", result.message || "Action sent");
+        uiState.usbDirty = false;
+        uiState.sensorDirty = false;
+      } catch (error) {
+        showBanner("notice", error.message);
+      }
+    }
+
+    async function refresh() {
+      try {
+        const response = await fetch("/api/v1/status", { cache: "no-store" });
+        const data = await response.json();
+        buildControls(data.meta || {});
+        populateForms(data);
+
+        const dot = document.getElementById("statusDot");
+        const latest = data.latest || {};
+        const healthy = data.connected && !data.stale;
+
+        dot.classList.toggle("ok", healthy);
+        setText("statusText", healthy ? "Connected and streaming" : "Disconnected or stale");
+
+        setText("roll", fmtNumber(latest.roll_deg));
+        setText("pitch", fmtNumber(latest.pitch_deg));
+        setText("yaw", fmtNumber(latest.yaw_deg));
+        setText("rate", fmtNumber(data.sample_rate_hz, 1));
+        setText("configuredDevice", data.configured_device_path || "Auto-detect");
+        setText("device", data.device_path || "-");
+        setText("resolvedDevice", data.resolved_device_path || "-");
+        setText("baud", String(data.baud || "-"));
+        setText("age", `${data.age_ms} ms`);
+        setText("staleThreshold", `${data.stale_threshold_ms} ms`);
+
+        setText("accelX", `${fmtNumber(latest.accel_x_g)} g`);
+        setText("accelY", `${fmtNumber(latest.accel_y_g)} g`);
+        setText("accelZ", `${fmtNumber(latest.accel_z_g)} g`);
+        setText("gyroX", `${fmtNumber(latest.gyro_x_dps)} dps`);
+        setText("gyroY", `${fmtNumber(latest.gyro_y_dps)} dps`);
+        setText("gyroZ", `${fmtNumber(latest.gyro_z_dps)} dps`);
+        setText("frames", String(data.frames_received || 0));
+        setText("bytes", String(data.bytes_received || 0));
+        setText("checksums", String(data.checksum_errors || 0));
+
+        showBanner("warning", data.last_error || "");
+      } catch (error) {
+        document.getElementById("statusDot").classList.remove("ok");
+        setText("statusText", "HTTP endpoint unreachable");
+        showBanner("warning", error.message);
+      }
+    }
+
+    document.getElementById("usbForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = {
+        device_path: document.getElementById("selectedDevice").value,
+        host_baud: Number(document.getElementById("hostBaud").value),
+      };
+
+      try {
+        const result = await postJson("/api/v1/settings/usb", payload);
+        uiState.usbDirty = false;
+        showBanner("notice", result.message || "USB settings saved");
+      } catch (error) {
+        showBanner("notice", error.message);
+      }
+    });
+
+    document.getElementById("sensorForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = {
+        output_content: {},
+      };
+
+      const sensorBaud = document.getElementById("sensorBaud").value;
+      const outputRate = document.getElementById("outputRate").value;
+      const bandwidth = document.getElementById("bandwidth").value;
+      const orientation = document.getElementById("orientation").value;
+      const axisMode = document.getElementById("axisMode").value;
+
+      if (sensorBaud) payload.sensor_baud = Number(sensorBaud);
+      if (outputRate) payload.output_rate_hz = Number(outputRate);
+      if (bandwidth) payload.bandwidth_hz = Number(bandwidth);
+      if (orientation !== "") payload.orientation = Number(orientation);
+      if (axisMode !== "") payload.axis_mode = Number(axisMode);
+
+      for (const checkbox of document.querySelectorAll("[data-output-key]")) {
+        payload.output_content[checkbox.dataset.outputKey] = checkbox.checked;
+      }
+
+      try {
+        const result = await postJson("/api/v1/settings/sensor", payload);
+        uiState.sensorDirty = false;
+        uiState.usbDirty = false;
+        showBanner("notice", result.message || "Sensor settings applied");
+      } catch (error) {
+        showBanner("notice", error.message);
+      }
+    });
+
+    for (const button of document.querySelectorAll("[data-action]")) {
+      button.addEventListener("click", () => runAction(button.dataset.action));
+    }
+
+    refresh();
+    setInterval(refresh, 400);
+  </script>
+</body>
+</html>
