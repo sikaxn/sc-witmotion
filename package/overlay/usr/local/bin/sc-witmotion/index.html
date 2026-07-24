@@ -523,7 +523,9 @@
         const label = device.available ? device.label : `${device.label} [offline]`;
         appendOption(select, device.path, label);
       }
-      const nextValue = selectedPath || currentValue || "";
+      const nextValue = uiState.usbDirty
+        ? (currentValue || selectedPath || "")
+        : (selectedPath || currentValue || "");
       select.value = nextValue;
     }
 
